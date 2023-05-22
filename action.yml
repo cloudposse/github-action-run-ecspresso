@@ -1,5 +1,5 @@
-name: 'Deploy Ecspresso'
-description: 'Deploy ECS with Ecspresso'
+name: 'Run Ecspresso'
+description: 'Run ECS task with Ecspresso'
 author: hello@cloudposse.com
 branding:
   icon: 'search'
@@ -18,10 +18,6 @@ inputs:
   region:
     description: AWS Region
     required: true
-  operation:
-    description: Operation (valid options - `deploy`, `destroy`)
-    required: true
-    default: deploy
   cluster:
     description: Cluster name
     required: true
@@ -72,7 +68,6 @@ runs:
           timeout: ${{ inputs.timeout }}
 
     - name: Deploy
-      if: ${{ inputs.operation == 'deploy' }}
       shell: bash
       run: |
         ecspresso --config=./ecspresso.yml deploy
