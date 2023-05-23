@@ -70,7 +70,7 @@ runs:
     - name: Deploy
       shell: bash
       run: |
-        ecspresso --config=./ecspresso.yml deploy
+        ecspresso --config=./ecspresso.yml run
       env:
         IMAGE: ${{ inputs.image }}:${{ inputs.image-tag }}
         AWS_REGION: ${{ inputs.region }}

@@ -39,10 +39,11 @@ jobs:
           image: 252494810635.dkr.ecr.us-east-2.amazonaws.com/cloudposse/example-app-on-ecs
           image-tag: latest
           region: us-east-2
-          operation: deploy
           cluster: cplive-plat-ue2-sandbox
           application: cplive-plat-ue2-sandbox-example-app-on-ecs
           taskdef-path: ./test/taskdef.json
+#          run: |-
+            
 
     outputs:
       result: "${{ steps.current.outcome }}"
