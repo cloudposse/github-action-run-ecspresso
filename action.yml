@@ -102,12 +102,12 @@ runs:
         content: |
           ${{ toJSON(fromJSON(inputs.overrides)) }}
 
-    - name: Create TMP dir
-      shell: bash
-      run: |
-        сat ./overrides.json
-        cat ./ecspresso.yml
-#        cat /tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json
+#    - name: Create TMP dir
+#      shell: bash
+#      run: |
+#        сat ./overrides.json
+#        cat ./ecspresso.yml
+##        cat /tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json
 
     - name: Run
       shell: bash
