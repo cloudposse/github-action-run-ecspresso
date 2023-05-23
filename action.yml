@@ -100,7 +100,7 @@ runs:
         path: './'
         file: 'overrides.json'
         content: |
-          ${{ inputs.overrides }}
+          ${{ toJSON(fromJSON(inputs.overrides)) }}
 
     - name: Create TMP dir
       shell: bash
@@ -112,7 +112,7 @@ runs:
     - name: Run
       shell: bash
       run: |
-        ecspresso --config=./ecspresso.yml run --overrides-file=./overrides.json
+        ecspresso --config=./ecspresso.yml run --overrides=${{ toJSON(fromJSON(inputs.overrides)) }}
       env:
         IMAGE: ${{ inputs.image }}:${{ inputs.image-tag }}
         AWS_REGION: ${{ inputs.region }}
