@@ -67,6 +67,7 @@ runs:
           TMP_DIR_NAME
 
     - name: Create TMP dir
+      shell: bash
       run: |
         mkdir /tmp/${{ env.TMP_DIR_NAME }}
 
