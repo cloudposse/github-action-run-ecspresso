@@ -107,7 +107,7 @@ runs:
       run: |
         сat ./overrides.json
         cat ./ecspresso.yml
-        cat /tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json
+#        cat /tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json
 
     - name: Run
       shell: bash
