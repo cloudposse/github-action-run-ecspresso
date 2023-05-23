@@ -105,7 +105,8 @@ runs:
     - name: Create TMP dir
       shell: bash
       run: |
-        cat ./overrides.json
+        cat ./ecspresso.yml
+        cat /tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json
 
     - name: Run
       shell: bash
