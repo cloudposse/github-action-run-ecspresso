@@ -42,8 +42,15 @@ jobs:
           cluster: cplive-plat-ue2-sandbox
           application: cplive-plat-ue2-sandbox-example-app-on-ecs
           taskdef-path: ./test/taskdef.json
-#          run: |-
-            
+          overrides: |-
+            {
+              "containerOverrides":[
+                {
+                  "name":"app",
+                  "command":["/db-migrate.sh"]
+                }
+              ]
+            }            
 
     outputs:
       result: "${{ steps.current.outcome }}"
