@@ -112,7 +112,7 @@ runs:
     - name: Run
       shell: bash
       run: |
-        ecspresso --config=./ecspresso.yml run --overrides=${{ toJSON(fromJSON(inputs.overrides)) }}
+        ecspresso --config=./ecspresso.yml run --overrides='${{ toJSON(fromJSON(inputs.overrides)) }}'
       env:
         IMAGE: ${{ inputs.image }}:${{ inputs.image-tag }}
         AWS_REGION: ${{ inputs.region }}
