@@ -102,12 +102,11 @@ runs:
         content: |
           ${{ inputs.overrides }}
 
-#    - name: Create TMP dir
-#      shell: bash
-#      run: |
-#        сat ./overrides.json
-#        cat ./ecspresso.yml
-#        cat /tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json
+    - name: Validate 3 files using the same schema
+      uses: cardinalby/schema-validator-action@v3
+      with:
+        file: ./overrides.json
+        schema: ${GITHUB_ACTION_PATH}/schema/run-task-override.schema.json
 
     - name: Run
       shell: bash
