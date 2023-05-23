@@ -102,11 +102,18 @@ runs:
         content: |
           ${{ inputs.overrides }}
 
+    - name: Create TMP dir
+      shell: bash
+      run: |
+        ls -l ${{ env.GITHUB_ACTION_PATH }}
+
     - name: Validate 3 files using the same schema
       uses: cardinalby/schema-validator-action@v3
       with:
         file: ./overrides.json
-        schema: ${GITHUB_ACTION_PATH}/schema/run-task-override.schema.json
+        schema: ${{ env.GITHUB_ACTION_PATH }}/schema/run-task-override.schema.json
+
+
 
     - name: Run
       shell: bash
