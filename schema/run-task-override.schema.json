@@ -34,15 +34,7 @@
                     "type": "string"
                 }
             },
-            "required": [
-                "containerOverrides",
-                "cpu",
-                "ephemeralStorage",
-                "executionRoleArn",
-                "inferenceAcceleratorOverrides",
-                "memory",
-                "taskRoleArn"
-            ],
+            "required": [],
             "title": "Welcome8"
         },
         "ContainerOverride": {
@@ -87,14 +79,7 @@
                 }
             },
             "required": [
-                "command",
-                "cpu",
-                "environment",
-                "environmentFiles",
-                "memory",
-                "memoryReservation",
-                "name",
-                "resourceRequirements"
+                "name"
             ],
             "title": "ContainerOverride"
         },
