@@ -50,6 +50,25 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - uses: 1arp/create-a-file-action@0.2
+      with:
+        path: './'
+        file: 'overrides.json'
+        content: |
+          ${{ inputs.overrides }}
+
+    - name: Schema path
+      id: schema
+      shell: bash
+      run: |
+        echo "path=${GITHUB_ACTION_PATH}/schema/run-task-override.schema.json" >> $GITHUB_OUTPUT
+
+    - name: Validate task override
+      uses: cardinalby/schema-validator-action@v3
+      with:
+        file: ./overrides.json
+        schema: ${{ steps.schema.outputs.path }}
+
     - name: 'Install jq 1.6'
       uses: dcarbone/install-jq-action@v1.0.1
       with:
@@ -94,25 +113,6 @@ runs:
           service_definition: /tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json
           task_definition: ${{ inputs.taskdef-path }}
           timeout: ${{ inputs.timeout }}
-
-    - uses: 1arp/create-a-file-action@0.2
-      with:
-        path: './'
-        file: 'overrides.json'
-        content: |
-          ${{ inputs.overrides }}
-
-    - name: Schema path
-      id: schema
-      shell: bash
-      run: |
-        echo "path=${GITHUB_ACTION_PATH}/schema/run-task-override.schema.json" >> $GITHUB_OUTPUT
-
-    - name: Validate 3 files using the same schema
-      uses: cardinalby/schema-validator-action@v3
-      with:
-        file: ./overrides.json
-        schema: ${{ steps.schema.outputs.path }}
 
     - name: Run
       shell: bash
