@@ -1,5 +1,5 @@
-name: 'Deploy Ecspresso'
-description: 'Deploy ECS with Ecspresso'
+name: 'Run Ecspresso'
+description: 'Run ECS task with Ecspresso'
 author: hello@cloudposse.com
 branding:
   icon: 'search'
@@ -18,10 +18,6 @@ inputs:
   region:
     description: AWS Region
     required: true
-  operation:
-    description: Operation (valid options - `deploy`, `destroy`)
-    required: true
-    default: deploy
   cluster:
     description: Cluster name
     required: true
@@ -39,6 +35,10 @@ inputs:
     description: Ecspresso timeout
     required: false
     default: 5m
+  overrides:
+    description: A list of container overrides in JSON format that specify the name of a container in the specified task definition and the overrides it should receive.
+    required: false
+    default: "{}"
 
 outputs:
   webapp-url:
@@ -50,6 +50,25 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - uses: 1arp/create-a-file-action@0.2
+      with:
+        path: './'
+        file: 'overrides.json'
+        content: |
+          ${{ inputs.overrides }}
+
+    - name: Schema path
+      id: schema
+      shell: bash
+      run: |
+        echo "path=${GITHUB_ACTION_PATH}/schema/run-task-override.schema.json" >> $GITHUB_OUTPUT
+
+    - name: Validate task override
+      uses: cardinalby/schema-validator-action@v3
+      with:
+        file: ./overrides.json
+        schema: ${{ steps.schema.outputs.path }}
+
     - name: 'Install jq 1.6'
       uses: dcarbone/install-jq-action@v1.0.1
       with:
@@ -60,6 +79,29 @@ runs:
       with:
         version: ${{ inputs.ecspresso-version }}
 
+    - name: Set random environment variables
+      uses: joellefkowitz/random-env@v1.0.0
+      with:
+        names: |
+          TMP_DIR_NAME
+
+    - name: Create TMP dir
+      shell: bash
+      run: |
+        mkdir /tmp/${{ env.TMP_DIR_NAME }}
+
+    - name: Init
+      shell: bash
+      run: |
+        ecspresso init \
+          --cluster=${{ inputs.cluster }} \
+          --service=${{ inputs.application }} \
+          --task-definition-path=/tmp/${{ env.TMP_DIR_NAME }}/ecs-task-def.json \
+          --service-definition-path=/tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json \
+          --config-file-path=/tmp/${{ env.TMP_DIR_NAME }}/
+      env:
+        AWS_REGION: ${{ inputs.region }}
+
     - uses: 1arp/create-a-file-action@0.2
       with:
         path: './'
@@ -68,14 +110,14 @@ runs:
           region: ${{ inputs.region }}
           cluster: ${{ inputs.cluster }}
           service: ${{ inputs.application }}
+          service_definition: /tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json
           task_definition: ${{ inputs.taskdef-path }}
           timeout: ${{ inputs.timeout }}
 
-    - name: Deploy
-      if: ${{ inputs.operation == 'deploy' }}
+    - name: Run
       shell: bash
       run: |
-        ecspresso --config=./ecspresso.yml deploy
+        ecspresso --config=./ecspresso.yml run --overrides-file=./overrides.json
       env:
         IMAGE: ${{ inputs.image }}:${{ inputs.image-tag }}
         AWS_REGION: ${{ inputs.region }}

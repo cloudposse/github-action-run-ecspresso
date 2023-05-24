@@ -1,4 +1,4 @@
-name: Test example negative
+name: Test validation failed
 on:
   #  # Uncomment when test added first time to register workflow and comment it back after workflow would be registered
   #  #
@@ -40,14 +40,14 @@ jobs:
           image-tag: latest
           region: us-east-2
           cluster: cplive-plat-ue2-sandbox
-          application: cplive-plat-ue2-sandbox-example
+          application: cplive-plat-ue2-sandbox-example-app-on-ecs
           taskdef-path: ./test/taskdef.json
           overrides: |-
             {
               "containerOverrides":[
                 {
                   "name":"app",
-                  "command":["/db-migrate-failed.sh"]
+                  "command3":["/db-migrate-failed.sh"]
                 }
               ]
             }          

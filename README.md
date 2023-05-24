@@ -1,6 +1,6 @@
 
 <!-- markdownlint-disable -->
-# github-action-deploy-ecspresso [![Latest Release](https://img.shields.io/github/release/cloudposse/github-action-deploy-ecspresso.svg)](https://github.com/cloudposse/github-action-deploy-ecspresso/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
+# github-action-run-ecspresso [![Latest Release](https://img.shields.io/github/release/cloudposse/github-action-run-ecspresso.svg)](https://github.com/cloudposse/github-action-run-ecspresso/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 <!-- markdownlint-restore -->
 
 [![README Header][readme_header_img]][readme_header_link]
@@ -28,7 +28,7 @@
 
 -->
 
-Deploy on ECS with [Escpresso](https://github.com/kayac/ecspresso)
+Run ECS task with [Escpresso](https://github.com/kayac/ecspresso)
 
 ---
 
@@ -80,7 +80,7 @@ Feel free to use it as reference and starting point.
       runs-on: ubuntu-latest
       steps:
         - name: Example action
-          uses: cloudposse/example-github-action-deploy-ecspresso@main
+          uses: cloudposse/example-github-action-run-ecspresso@main
           id: example
           with:
             image: 1111111111111.dkr.ecr.us-east-2.amazonaws.com/cloudposse/example-app-on-ecs
@@ -90,6 +90,15 @@ Feel free to use it as reference and starting point.
             cluster: acme-plat-ue2-sandbox
             application: acme-plat-ue2-sandbox-example-app-on-ecs
             taskdef-path: taskdef.json
+            overrides: |-
+            {
+              "containerOverrides":[
+                {
+                  "name": "app",
+                  "command": ["/db-migrate.sh"]
+                }
+              ]
+            }            
 
       outputs:
         result: ${{ steps.example.outputs.webapp-url }}
@@ -112,7 +121,7 @@ Feel free to use it as reference and starting point.
 | ecspresso-version | Ecspresso version | v2.1.0 | false |
 | image | Docker image | N/A | true |
 | image-tag | Docker image tag | N/A | true |
-| operation | Operation (valid options - `deploy`, `destroy`) | deploy | true |
+| overrides | A list of container overrides in JSON format that specify the name of a container in the specified task definition and the overrides it should receive. | {} | false |
 | region | AWS Region | N/A | true |
 | taskdef-path | Task definition path | N/A | true |
 | timeout | Ecspresso timeout | 5m | false |
@@ -129,7 +138,7 @@ Feel free to use it as reference and starting point.
 
 ## Share the Love
 
-Like this project? Please give it a ★ on [our GitHub](https://github.com/cloudposse/github-action-deploy-ecspresso)! (it helps us **a lot**)
+Like this project? Please give it a ★ on [our GitHub](https://github.com/cloudposse/github-action-run-ecspresso)! (it helps us **a lot**)
 
 Are you using this project or any of our other projects? Consider [leaving a testimonial][testimonial]. =)
 
@@ -153,7 +162,7 @@ For additional context, refer to some of these links.
 
 **Got a question?** We got answers.
 
-File a GitHub [issue](https://github.com/cloudposse/github-action-deploy-ecspresso/issues), send us an [email][email] or join our [Slack Community][slack].
+File a GitHub [issue](https://github.com/cloudposse/github-action-run-ecspresso/issues), send us an [email][email] or join our [Slack Community][slack].
 
 [![README Commercial Support][readme_commercial_support_img]][readme_commercial_support_link]
 
@@ -201,7 +210,7 @@ Sign up for [our newsletter][newsletter] that covers everything on our technolog
 
 ### Bug Reports & Feature Requests
 
-Please use the [issue tracker](https://github.com/cloudposse/github-action-deploy-ecspresso/issues) to report any bugs or file feature requests.
+Please use the [issue tracker](https://github.com/cloudposse/github-action-run-ecspresso/issues) to report any bugs or file feature requests.
 
 ### Developing
 
@@ -289,33 +298,33 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 [![Beacon][beacon]][website]
 <!-- markdownlint-disable -->
   [logo]: https://cloudposse.com/logo-300x69.svg
-  [docs]: https://cpco.io/docs?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=docs
-  [website]: https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=website
-  [github]: https://cpco.io/github?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=github
-  [jobs]: https://cpco.io/jobs?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=jobs
-  [hire]: https://cpco.io/hire?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=hire
-  [slack]: https://cpco.io/slack?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=slack
-  [linkedin]: https://cpco.io/linkedin?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=linkedin
-  [twitter]: https://cpco.io/twitter?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=twitter
-  [testimonial]: https://cpco.io/leave-testimonial?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=testimonial
-  [office_hours]: https://cloudposse.com/office-hours?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=office_hours
-  [newsletter]: https://cpco.io/newsletter?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=newsletter
-  [discourse]: https://ask.sweetops.com/?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=discourse
-  [email]: https://cpco.io/email?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=email
-  [commercial_support]: https://cpco.io/commercial-support?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=commercial_support
-  [we_love_open_source]: https://cpco.io/we-love-open-source?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=we_love_open_source
-  [terraform_modules]: https://cpco.io/terraform-modules?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=terraform_modules
+  [docs]: https://cpco.io/docs?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=docs
+  [website]: https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=website
+  [github]: https://cpco.io/github?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=github
+  [jobs]: https://cpco.io/jobs?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=jobs
+  [hire]: https://cpco.io/hire?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=hire
+  [slack]: https://cpco.io/slack?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=slack
+  [linkedin]: https://cpco.io/linkedin?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=linkedin
+  [twitter]: https://cpco.io/twitter?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=twitter
+  [testimonial]: https://cpco.io/leave-testimonial?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=testimonial
+  [office_hours]: https://cloudposse.com/office-hours?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=office_hours
+  [newsletter]: https://cpco.io/newsletter?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=newsletter
+  [discourse]: https://ask.sweetops.com/?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=discourse
+  [email]: https://cpco.io/email?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=email
+  [commercial_support]: https://cpco.io/commercial-support?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=commercial_support
+  [we_love_open_source]: https://cpco.io/we-love-open-source?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=we_love_open_source
+  [terraform_modules]: https://cpco.io/terraform-modules?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=terraform_modules
   [readme_header_img]: https://cloudposse.com/readme/header/img
-  [readme_header_link]: https://cloudposse.com/readme/header/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=readme_header_link
+  [readme_header_link]: https://cloudposse.com/readme/header/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=readme_header_link
   [readme_footer_img]: https://cloudposse.com/readme/footer/img
-  [readme_footer_link]: https://cloudposse.com/readme/footer/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=readme_footer_link
+  [readme_footer_link]: https://cloudposse.com/readme/footer/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=readme_footer_link
   [readme_commercial_support_img]: https://cloudposse.com/readme/commercial-support/img
-  [readme_commercial_support_link]: https://cloudposse.com/readme/commercial-support/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-deploy-ecspresso&utm_content=readme_commercial_support_link
-  [share_twitter]: https://twitter.com/intent/tweet/?text=github-action-deploy-ecspresso&url=https://github.com/cloudposse/github-action-deploy-ecspresso
-  [share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=github-action-deploy-ecspresso&url=https://github.com/cloudposse/github-action-deploy-ecspresso
-  [share_reddit]: https://reddit.com/submit/?url=https://github.com/cloudposse/github-action-deploy-ecspresso
-  [share_facebook]: https://facebook.com/sharer/sharer.php?u=https://github.com/cloudposse/github-action-deploy-ecspresso
-  [share_googleplus]: https://plus.google.com/share?url=https://github.com/cloudposse/github-action-deploy-ecspresso
-  [share_email]: mailto:?subject=github-action-deploy-ecspresso&body=https://github.com/cloudposse/github-action-deploy-ecspresso
-  [beacon]: https://ga-beacon.cloudposse.com/UA-76589703-4/cloudposse/github-action-deploy-ecspresso?pixel&cs=github&cm=readme&an=github-action-deploy-ecspresso
+  [readme_commercial_support_link]: https://cloudposse.com/readme/commercial-support/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/github-action-run-ecspresso&utm_content=readme_commercial_support_link
+  [share_twitter]: https://twitter.com/intent/tweet/?text=github-action-run-ecspresso&url=https://github.com/cloudposse/github-action-run-ecspresso
+  [share_linkedin]: https://www.linkedin.com/shareArticle?mini=true&title=github-action-run-ecspresso&url=https://github.com/cloudposse/github-action-run-ecspresso
+  [share_reddit]: https://reddit.com/submit/?url=https://github.com/cloudposse/github-action-run-ecspresso
+  [share_facebook]: https://facebook.com/sharer/sharer.php?u=https://github.com/cloudposse/github-action-run-ecspresso
+  [share_googleplus]: https://plus.google.com/share?url=https://github.com/cloudposse/github-action-run-ecspresso
+  [share_email]: mailto:?subject=github-action-run-ecspresso&body=https://github.com/cloudposse/github-action-run-ecspresso
+  [beacon]: https://ga-beacon.cloudposse.com/UA-76589703-4/cloudposse/github-action-run-ecspresso?pixel&cs=github&cm=readme&an=github-action-run-ecspresso
 <!-- markdownlint-restore -->
