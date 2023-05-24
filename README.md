@@ -28,7 +28,7 @@
 
 -->
 
-Deploy on ECS with [Escpresso](https://github.com/kayac/ecspresso)
+Run ECS task with [Escpresso](https://github.com/kayac/ecspresso)
 
 ---
 
@@ -90,6 +90,15 @@ Feel free to use it as reference and starting point.
             cluster: acme-plat-ue2-sandbox
             application: acme-plat-ue2-sandbox-example-app-on-ecs
             taskdef-path: taskdef.json
+            overrides: |-
+            {
+              "containerOverrides":[
+                {
+                  "name": "app",
+                  "command": ["/db-migrate.sh"]
+                }
+              ]
+            }            
 
       outputs:
         result: ${{ steps.example.outputs.webapp-url }}
@@ -112,7 +121,7 @@ Feel free to use it as reference and starting point.
 | ecspresso-version | Ecspresso version | v2.1.0 | false |
 | image | Docker image | N/A | true |
 | image-tag | Docker image tag | N/A | true |
-| operation | Operation (valid options - `deploy`, `destroy`) | deploy | true |
+| overrides | A list of container overrides in JSON format that specify the name of a container in the specified task definition and the overrides it should receive. | {} | false |
 | region | AWS Region | N/A | true |
 | taskdef-path | Task definition path | N/A | true |
 | timeout | Ecspresso timeout | 5m | false |

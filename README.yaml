@@ -32,7 +32,7 @@ badges:
 related: []
 
 # Short description of this project
-description: Deploy on ECS with [Escpresso](https://github.com/kayac/ecspresso)
+description: Run ECS task with [Escpresso](https://github.com/kayac/ecspresso)
 
 introduction: |-
   This is template repository to create composite GitHub Actions. 
@@ -69,7 +69,16 @@ usage: |-
               cluster: acme-plat-ue2-sandbox
               application: acme-plat-ue2-sandbox-example-app-on-ecs
               taskdef-path: taskdef.json
-  
+              overrides: |-
+              {
+                "containerOverrides":[
+                  {
+                    "name": "app",
+                    "command": ["/db-migrate.sh"]
+                  }
+                ]
+              }            
+
         outputs:
           result: ${{ steps.example.outputs.webapp-url }}
   ```
