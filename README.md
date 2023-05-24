@@ -91,14 +91,14 @@ Feel free to use it as reference and starting point.
             application: acme-plat-ue2-sandbox-example-app-on-ecs
             taskdef-path: taskdef.json
             overrides: |-
-            {
-              "containerOverrides":[
-                {
-                  "name": "app",
-                  "command": ["/db-migrate.sh"]
-                }
-              ]
-            }            
+              {
+                "containerOverrides":[
+                  {
+                    "name": "app",
+                    "command": ["/db-migrate.sh"]
+                  }
+                ]
+              }            
 
       outputs:
         result: ${{ steps.example.outputs.webapp-url }}
