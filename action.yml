@@ -106,7 +106,7 @@ runs:
       id: schema
       shell: bash
       run: |
-        echo "path=${{ env.GITHUB_ACTION_PATH }}/schema/run-task-override.schema.json" >> $GITHUB_OUTPUT
+        echo "path=${GITHUB_ACTION_PATH}/schema/run-task-override.schema.json" >> $GITHUB_OUTPUT
 
     - name: Validate 3 files using the same schema
       uses: cardinalby/schema-validator-action@v3
