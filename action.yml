@@ -80,7 +80,7 @@ runs:
         version: ${{ inputs.ecspresso-version }}
 
     - name: Set random environment variables
-      uses: joellefkowitz/random-env@v1.0.0
+      uses: joellefkowitz/random-env@v1.3.0
       with:
         names: |
           TMP_DIR_NAME
