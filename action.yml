@@ -143,8 +143,8 @@ runs:
           --cluster=${{ inputs.cluster }} \
           --service=${{ inputs.application }} \
           --task-definition-path=./${{ steps.tmp.outputs.dir_name }}/${{ inputs.application }}.json \
-          --service-definition-path=./${{ steps.tmp.outputs.dir_name }/ecs-service-def.json \
-          --config-file-path=./${{ steps.tmp.outputs.dir_name }/
+          --service-definition-path=./${{ steps.tmp.outputs.dir_name }}/ecs-service-def.json \
+          --config-file-path=./${{ steps.tmp.outputs.dir_name }}/
       env:
         AWS_REGION: ${{ inputs.region }}
 
