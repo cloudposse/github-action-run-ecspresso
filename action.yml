@@ -157,7 +157,7 @@ runs:
           cluster: ${{ inputs.cluster }}
           service: ${{ inputs.application }}
           service_definition: ./${{ steps.tmp.outputs.dir_name }}/ecs-service-def.json
-          task_definition: ${{ inputs.taskdef-path }}
+          task_definition: ./${{ steps.tmp.outputs.dir_name }}/${{ inputs.application }}.json
           timeout: ${{ inputs.timeout }}
 
     - name: Run
