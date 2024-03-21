@@ -167,3 +167,4 @@ runs:
       env:
         IMAGE: ${{ inputs.image }}:${{ inputs.image-tag }}
         AWS_REGION: ${{ inputs.region }}
+        
