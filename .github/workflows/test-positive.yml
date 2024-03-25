@@ -47,7 +47,7 @@ jobs:
               "containerOverrides":[
                 {
                   "name": "app",
-                  "command": ["/db-migrate.sh"]
+                  "command": ["echo", "Hello World!"]
                 }
               ]
             }            

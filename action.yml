@@ -39,7 +39,12 @@ inputs:
     description: A list of container overrides in JSON format that specify the name of a container in the specified task definition and the overrides it should receive.
     required: false
     default: "{}"
-
+  mirror_to_s3_bucket:
+    description: Mirror task definition to s3 bucket
+    required: false
+  use_partial_taskdefinition:
+    description: "NOTE: Experimental. Load templated task definition from S3 bucket, which is created by the `ecs-service` component. This is useful when you want to manage the task definition in the infrastructure repository and the application repository. The infrastructure repository manages things like Volumes and EFS mounts, and the Application repository manages the application code and environment variables."
+    required: false
 outputs:
   webapp-url:
     description: "Web Application url"
@@ -80,15 +85,56 @@ runs:
         version: ${{ inputs.ecspresso-version }}
 
     - name: Set random environment variables
-      uses: joellefkowitz/random-env@v1.0.0
-      with:
-        names: |
-          TMP_DIR_NAME
+      id: tmp
+      shell: bash
+      run: |
+        VALUE=$(echo $RANDOM | md5sum | head -c 20)
+        echo "dir_name=${VALUE}" >> $GITHUB_OUTPUT
 
     - name: Create TMP dir
       shell: bash
       run: |
-        mkdir /tmp/${{ env.TMP_DIR_NAME }}
+        mkdir -p ./${{ steps.tmp.outputs.dir_name }}
+        cp ${{ inputs.taskdef-path }} ./${{ steps.tmp.outputs.dir_name }}/${{ inputs.application }}.json
+
+    - name: Fetch Current Task Definition
+      if: ${{ inputs.mirror_to_s3_bucket != '' && inputs.use_partial_taskdefinition != '' }}
+      uses: keithweaver/aws-s3-github-action@v1.0.0
+      with:
+        command: cp
+        source: s3://${{ inputs.mirror_to_s3_bucket }}/${{ inputs.cluster }}/${{ inputs.application }}/task-template.json
+        destination: ./${{ steps.tmp.outputs.dir_name }}/s3_task_def.json
+        aws_region: ${{ inputs.region }}
+
+    - name: Merge Task Definitions
+      if: ${{ inputs.mirror_to_s3_bucket != '' && inputs.use_partial_taskdefinition != '' }}
+      shell: bash
+      run: |
+        TEMP="./${{ steps.tmp.outputs.dir_name }}"
+        
+        jq --slurp '
+          {
+            containerDefinitions: (
+                reduce (.[0].containerDefinitions[] | {(.name): .}) as $item ({}; . + $item)
+                *
+                reduce (.[1].containerDefinitions[] | {(.name): .}) as $item ({}; . + $item)
+            )
+            | to_entries
+            | map(.value)
+          }
+          + (.[0] + .[1] | del(.containerDefinitions))
+        ' $TEMP/s3_task_def.json ${{ inputs.taskdef-path }} > ./${{ steps.tmp.outputs.dir_name }}/${{ inputs.application }}.json
+
+    - name: Debug
+      if: ${{ inputs.mirror_to_s3_bucket != '' && inputs.use_partial_taskdefinition != '' && inputs.debug == 'true'}}
+      shell: bash
+      run: |
+        echo "----------------- S3 Task Definition -----------------"
+        cat ./${{ steps.tmp.outputs.dir_name }}/s3_task_def.json | jq
+        echo "----------------- Current Task Definition -----------------"
+        cat ${{ inputs.taskdef-path }}
+        echo "----------------- Merged Task Definition -----------------"
+        cat ./${{ steps.tmp.outputs.dir_name }}/${{ inputs.application }}.json
 
     - name: Init
       shell: bash
@@ -96,9 +142,9 @@ runs:
         ecspresso init \
           --cluster=${{ inputs.cluster }} \
           --service=${{ inputs.application }} \
-          --task-definition-path=/tmp/${{ env.TMP_DIR_NAME }}/ecs-task-def.json \
-          --service-definition-path=/tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json \
-          --config-file-path=/tmp/${{ env.TMP_DIR_NAME }}/
+          --task-definition-path=./${{ steps.tmp.outputs.dir_name }}/${{ inputs.application }}.json \
+          --service-definition-path=./${{ steps.tmp.outputs.dir_name }}/ecs-service-def.json \
+          --config-file-path=./${{ steps.tmp.outputs.dir_name }}/
       env:
         AWS_REGION: ${{ inputs.region }}
 
@@ -110,8 +156,8 @@ runs:
           region: ${{ inputs.region }}
           cluster: ${{ inputs.cluster }}
           service: ${{ inputs.application }}
-          service_definition: /tmp/${{ env.TMP_DIR_NAME }}/ecs-service-def.json
-          task_definition: ${{ inputs.taskdef-path }}
+          service_definition: ./${{ steps.tmp.outputs.dir_name }}/ecs-service-def.json
+          task_definition: ./${{ steps.tmp.outputs.dir_name }}/${{ inputs.application }}.json
           timeout: ${{ inputs.timeout }}
 
     - name: Run
@@ -121,3 +167,4 @@ runs:
       env:
         IMAGE: ${{ inputs.image }}:${{ inputs.image-tag }}
         AWS_REGION: ${{ inputs.region }}
+        
